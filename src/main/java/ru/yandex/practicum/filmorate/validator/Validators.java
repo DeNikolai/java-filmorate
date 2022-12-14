@@ -16,17 +16,10 @@ public class Validators {
 	public static final Validator<Film> filmValidator =  new Validator<>(List.of(
 			film -> !film.getName().isEmpty(),
 			film -> film.getDescription().length() <= DESCRIPTION_MAX_SIZE,
-			film -> film.getReleaseDate().isAfter(FIRST_FILM_RELEASE_DATE),
-			film -> film.getDuration().toSeconds() > 0
+			film -> film.getReleaseDate().isAfter(FIRST_FILM_RELEASE_DATE)
 	));
 
 	public static final Validator<User> userValidator = new Validator<>(List.of(
-			user -> user.getEmail().contains("@"),
-			user -> !user.getEmail().split("@")[0].isEmpty(),
-			user -> !user.getEmail().split("@")[1].split("\\.")[0].isEmpty(),
-			user -> user.getEmail().split("@").length <=2,
-			user -> user.getEmail().contains("."),
-			user -> user.getEmail().split("\\.").length > 1,
 			user -> !user.getLogin().isEmpty() && !user.getLogin().contains(" "),
 			user -> user.getBirthday().isBefore(LocalDate.now())
 	));

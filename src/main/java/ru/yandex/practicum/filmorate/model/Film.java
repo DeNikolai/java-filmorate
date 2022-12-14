@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.*;
 
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Positive;
 import java.time.Duration;
 import java.time.LocalDate;
 
@@ -16,5 +18,6 @@ public class Film {
 	@NonNull
 	private final LocalDate releaseDate;
 	@NonNull
-	private final Duration duration;
+	@Positive
+	private final int duration;
 }
