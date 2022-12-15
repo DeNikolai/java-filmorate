@@ -31,41 +31,34 @@ public class UserController {
 	@PostMapping
 	public User postUser(@RequestBody @Valid User user) {
 		log.debug("Request to add user: {}.", user);
-		try {
-			if(!Validators.userValidator.isValid(user))
-				throw new ValidationException("Validation failed.");
-			if (user.getName() == null)
-				user.setName(user.getLogin());
-			idCounter++;
-			user.setId(idCounter);
-			log.debug("Assigning an ID: {} to user.", idCounter);
-			users.put(user.getId(), user);
-			log.debug("User added.");
-			return user;
-		} catch (ValidationException validationException) {
-			log.debug(validationException.getMessage() + " Object: {}", user);
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, validationException.getMessage());
+		if(!Validators.userValidator.isValid(user)) {
+			log.debug("Validation failed.");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation failed.");
 		}
-
+		if (user.getName() == null)
+			user.setName(user.getLogin());
+		idCounter++;
+		user.setId(idCounter);
+		log.debug("Assigning an ID: {} to user.", idCounter);
+		users.put(user.getId(), user);
+		log.debug("User added.");
+		return user;
 	}
 
 	@PutMapping
 	public User putUser(@RequestBody @Valid User user) {
 		log.debug("Request to update user: {}.", user);
-		try {
-			if(!Validators.userValidator.isValid(user))
-				throw new ValidationException("Validation failed.");
-			if(user.getId() == null || !users.containsKey(user.getId()))
-				throw new ValidationException("Invalid user ID.");
-			users.replace(user.getId(), user);
-			log.debug("User updated.");
-			return user;
-		} catch (ValidationException validationException) {
-			log.debug(validationException.getMessage() + " Object: {}", user);
-			if (validationException.getMessage().equals("Invalid user ID."))
-				throw new ResponseStatusException(HttpStatus.NOT_FOUND, validationException.getMessage());
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, validationException.getMessage());
+		if(!Validators.userValidator.isValid(user)) {
+			log.debug("Validation failed.");
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Validation failed.");
 		}
+		if(user.getId() == null || !users.containsKey(user.getId())) {
+			log.debug("Invalid user ID.");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid user ID.");
+		}
+		users.replace(user.getId(), user);
+		log.debug("User updated.");
+		return user;
 	}
 
 	@GetMapping
