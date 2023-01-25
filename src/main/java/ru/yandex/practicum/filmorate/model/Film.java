@@ -2,22 +2,25 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
-
-import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
-import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder//для тестирования
 public class Film {
+	@EqualsAndHashCode.Exclude
 	private Integer id;
+	@NotBlank
 	@NonNull
 	private final String name;
 	private String description;
 	@NonNull
 	private final LocalDate releaseDate;
-	@NonNull
 	@Positive
+	@NonNull
 	private final int duration;
+	@EqualsAndHashCode.Exclude
+	private Set<Integer> likes;
 }
