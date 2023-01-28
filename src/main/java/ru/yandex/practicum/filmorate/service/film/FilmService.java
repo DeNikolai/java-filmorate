@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,9 +18,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class FilmService {
-
-	private int idCounter = 0;
+public class FilmService implements FilmServiceInterface {
 	private final FilmStorage filmStorage;
 	private final UserStorage userStorage;
 
@@ -30,24 +28,25 @@ public class FilmService {
 		this.userStorage = inMemoryUserStorage;
 	}
 
+	@Override
 	public Film addFilm(Film film) {
 		log.debug("Request to add film: {}.", film);
 		if (filmStorage.contains(film)) {
 			log.debug("Film already added.");
 			throw new FilmAlreadyAddedException("Film already added.");
 		}
-		idCounter++;
-		film.setId(idCounter);
 		filmStorage.addFilm(film);
 		log.debug("Film added.");
 		return film;
 	}
 
+	@Override
 	public Film getFilmById(int id) {
 		log.debug("Request to get film by ID: {}.", id);
 		return getFilmByIdAndExistCheck(id);
 	}
 
+	@Override
 	public Film updateFilm(Film film) {
 		log.debug("Request to update film: {}.", film);
 		getFilmByIdAndExistCheck(film.getId());
@@ -56,10 +55,12 @@ public class FilmService {
 		return film;
 	}
 
+	@Override
 	public List<Film> getAllFilms() {
 		return new ArrayList<>(filmStorage.getFilms().values());
 	}
 
+	@Override
 	public Film deleteFilm(int id) {
 		log.debug("Request to delete film with ID: {}.", id);
 		Film film = getFilmByIdAndExistCheck(id);
@@ -68,6 +69,7 @@ public class FilmService {
 		return film;
 	}
 
+	@Override
 	public Film addLike(int userId, int filmId) {
 		log.debug("Request to add like by user with id = {} to film with id = {}." , userId, filmId);
 		userExistCheck(userId);
@@ -78,6 +80,7 @@ public class FilmService {
 		return film;
 	}
 
+	@Override
 	public Film removeLike(int userId, int filmId) {
 		log.debug("Request remove add like by user with id = {} to film with id = {}." , userId, filmId);
 		userExistCheck(userId);
@@ -88,6 +91,7 @@ public class FilmService {
 		return film;
 	}
 
+	@Override
 	public Object[] getPopularFilms(int count) {
 		log.debug("Request to get first {} most popular films.", count);
 		/*
@@ -99,6 +103,7 @@ public class FilmService {
 				.toArray();
 	}
 
+	@Override
 	public Set<Integer> getAllLikesById(int id) {
 		log.debug("Request to get all likes by ID: {}.", id);
 		Film film = getFilmByIdAndExistCheck(id);

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.user;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,9 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class UserService {
-
-	private int idCounter = 0;
+public class UserService implements UserServiceInterface {
 	private final UserStorage storage;
 
 	@Autowired
@@ -25,24 +23,25 @@ public class UserService {
 		this.storage = inMemoryUserStorage;
 	}
 
+	@Override
 	public User addUser(User user) {
 		log.debug("Request to add user: {}.", user);
-		if(storage.contains(user)) {
+		if (storage.contains(user)) {
 			log.debug("User already added.");
 			throw new UserAlreadyAddedException("User already added.");
 		}
-		idCounter++;
-		user.setId(idCounter);
 		storage.addUser(user);
 		log.debug("User added.");
 		return user;
 	}
 
+	@Override
 	public User getUserById(int id) {
 		log.debug("Request to get user by ID: {}.", id);
 		return getUserByIdAndExistCheck(id);
 	}
 
+	@Override
 	public User updateUser(User user)  {
 		log.debug("Request to update user: {}.", user);
 		getUserByIdAndExistCheck(user.getId());
@@ -51,10 +50,12 @@ public class UserService {
 		return user;
 	}
 
+	@Override
 	public List<User> getAllUsers() {
 		return storage.getUsers();
 	}
 
+	@Override
 	public User deleteUserById(int id) {
 		log.debug("Request to delete user with ID: {}.", id);
 		User user = getUserByIdAndExistCheck(id);
@@ -64,44 +65,47 @@ public class UserService {
 		return user;
 	}
 
-	public void addFriendByUsersIds(int user1Id, int user2Id) {
-		log.debug("Request to become friends by ID: {} {}.", user1Id, user2Id);
-		User user1 = getUserByIdAndExistCheck(user1Id);
-		User user2 = getUserByIdAndExistCheck(user2Id);
-		if (user1.getFriends().contains(user2Id)) {
-			log.debug("User with ID = {} and user with ID = {} are already friends.", user1Id, user2Id);
+	@Override
+	public void addFriendByUsersIds(int userId, int friendId) {
+		log.debug("Request to become friends by ID: {} {}.", userId, friendId);
+		User user1 = getUserByIdAndExistCheck(userId);
+		User user2 = getUserByIdAndExistCheck(friendId);
+		if (user1.getFriends().contains(friendId)) {
+			log.debug("User with ID = {} and user with ID = {} are already friends.", userId, friendId);
 			throw new FriendsException(
-					String.format("User with ID = %s and user with ID = %s are already friends.", user1Id, user2Id)
+					String.format("User with ID = %s and user with ID = %s are already friends.", userId, friendId)
 			);
 		}
-		user1.getFriends().add(user2Id);
+		user1.getFriends().add(friendId);
 		storage.updateUser(user1);
-		user2.getFriends().add(user1Id);
+		user2.getFriends().add(userId);
 		storage.updateUser(user2);
-		log.debug("Users with IDs: {} {} are friends!", user1Id, user2Id);
+		log.debug("Users with IDs: {} {} are friends!", userId, friendId);
 	}
 
-	public void removeFriendByUsersIds(int user1Id, int user2Id) {
-		log.debug("Request to end friendship by IDs: {} {}.", user1Id, user2Id);
-		User user1 = getUserByIdAndExistCheck(user1Id);
-		User user2 = getUserByIdAndExistCheck(user2Id);
-		if (!user1.getFriends().contains(user2Id)) {
-			log.debug("User with ID = {} and user with ID = {} are not friends.", user1Id, user2Id);
+	@Override
+	public void removeFriendByUsersIds(int userId, int friendId) {
+		log.debug("Request to end friendship by IDs: {} {}.", userId, friendId);
+		User user1 = getUserByIdAndExistCheck(userId);
+		User user2 = getUserByIdAndExistCheck(friendId);
+		if (!user1.getFriends().contains(friendId)) {
+			log.debug("User with ID = {} and user with ID = {} are not friends.", userId, friendId);
 			throw new FriendsException(
-					String.format("User with ID = %s and user with ID = %s are not friends.", user1Id, user2Id)
+					String.format("User with ID = %s and user with ID = %s are not friends.", userId, friendId)
 			);
 		}
-		user1.getFriends().remove(user2Id);
+		user1.getFriends().remove(friendId);
 		storage.updateUser(user1);
-		user2.getFriends().remove(user2Id);
+		user2.getFriends().remove(friendId);
 		storage.updateUser(user2);
-		log.debug("Friendship between users with IDs: {} {} is over!", user1Id, user2Id);
+		log.debug("Friendship between users with IDs: {} {} is over!", userId, friendId);
 	}
 
-	public List<User> getMutualFriendsListByUsersIds(int user1Id, int user2Id) {
-		log.debug("Request to get mutual friends by IDs: {} {}.", user1Id, user2Id);
-		User user1 = getUserByIdAndExistCheck(user1Id);
-		User user2 = getUserByIdAndExistCheck(user2Id);
+	@Override
+	public List<User> getMutualFriendsListByUsersIds(int userId, int otherUserId) {
+		log.debug("Request to get mutual friends by IDs: {} {}.", userId, otherUserId);
+		User user1 = getUserByIdAndExistCheck(userId);
+		User user2 = getUserByIdAndExistCheck(otherUserId);
 		Set<Integer> user1Friends = user1.getFriends();
 		Set<Integer> user2Friends = user2.getFriends();
 
@@ -117,6 +121,7 @@ public class UserService {
 		return mutualFriends;
 	}
 
+	@Override
 	public List<User> getAllFriendsByUserId(int id) {
 		log.debug("Request to get all friends by ID: {}", id);
 		User user = getUserByIdAndExistCheck(id);

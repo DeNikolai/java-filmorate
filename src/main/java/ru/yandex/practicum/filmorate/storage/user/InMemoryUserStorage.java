@@ -1,13 +1,14 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
 
-@Component
+@Repository
 public class InMemoryUserStorage implements UserStorage {
+
+	private int idCounter = 0;
 
 	private final HashMap<Integer, User> users = new HashMap<>();
 
@@ -23,6 +24,8 @@ public class InMemoryUserStorage implements UserStorage {
 
 	@Override
 	public void addUser(User user) {
+		idCounter++;
+		user.setId(idCounter);
 		users.put(user.getId(), user);
 	}
 
