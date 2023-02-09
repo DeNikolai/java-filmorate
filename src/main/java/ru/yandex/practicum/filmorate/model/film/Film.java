@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import lombok.*;
 
@@ -23,4 +23,8 @@ public class Film {
 	private final int duration;
 	@EqualsAndHashCode.Exclude
 	private Set<Integer> likes;
+	@EqualsAndHashCode.Exclude
+	private Set<FilmGenres> genres;
+	@EqualsAndHashCode.Exclude
+	private MPARatings MPARating;
 }

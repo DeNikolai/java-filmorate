@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.user;
 
 import lombok.*;
 
@@ -25,4 +25,8 @@ public class User {
 	private final LocalDate birthday;
 	@EqualsAndHashCode.Exclude
 	private Set<Integer> friends;
+	/*
+	Тут будет HashMap<Integer, Boolean> friends
+	с подтверждением добавления в друзья.
+	 */
 }
