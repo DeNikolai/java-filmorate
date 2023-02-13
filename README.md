@@ -6,7 +6,7 @@ Template repository for Filmorate project.
 Примеры запросов: 
 1. Получение имен фильмов, которые понравились друзьям пользователя с id = 1
   
-  `
+  ```
   SELECT name
   FROM film
   WHERE film_id IN (
@@ -24,7 +24,7 @@ Template repository for Filmorate project.
                     WHERE user_id = 1
                   )
  );
-`
+```
 
 2. Получение жанров 5 самых популярных фильмов
 
