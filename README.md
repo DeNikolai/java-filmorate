@@ -28,7 +28,7 @@ Template repository for Filmorate project.
 
 2. Получение жанров 5 самых популярных фильмов
 
-
+```
   SELECT DISTINCT g.name
   FROM genre AS g
   WHERE film_id IN (
@@ -41,4 +41,4 @@ Template repository for Filmorate project.
     ORDER BY COUNT (user_id) DESC
     LIMIT 5
   );
-  
+  ```
