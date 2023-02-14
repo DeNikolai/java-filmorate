@@ -1,44 +1,46 @@
 # java-filmorate
 Template repository for Filmorate project.
-![ER-model](Filmorate%20ER-model.png)
-
-
-Примеры запросов: 
-1. Получение имен фильмов, которые понравились друзьям пользователя с id = 1
-  
-  ```
-  SELECT name
-  FROM film
-  WHERE film_id IN (
-                  
-                  --Подзапрос возвращает id фильмов, которые понравились друзьям пользователя
-                  
-                  SELECT film_id
-                  FROM like
-                  WHERE user_id IN (
-                     
-                    --Подзапрос возвращает id друзей пользователя
-                    
-                    SELECT friend_id
-                    FROM friendship
-                    WHERE user_id = 1
-                  )
- );
-```
-
-2. Получение жанров 5 самых популярных фильмов
+![ER-model](filmorate_new.png)
 
 ```
-  SELECT DISTINCT g.name
-  FROM genre AS g
-  WHERE film_id IN (
-    
-    --Подзапрос возвращает id 5 самых популярных фильмов
-    
-    SELECT film_id
-    FROM like
-    GROUP BY film_id
-    ORDER BY COUNT (user_id) DESC
-    LIMIT 5
-  );
-  ```
+-- запрос возвращает имена фильмов, которые нравятся друзьям пользователя с id = 1
+SELECT name
+FROM film
+WHERE id IN (
+  -- подзапрос возвращает id фильмов друзей пользователя
+  SELECT id
+  FROM like
+  WHERE user_id IN (
+    -- подзапрос возвращает id друзей пользователя
+    SELECT friend_id
+    FROM friendship
+    WHERE user_id = 1 AND status = true
+  )
+)
+```
+
+```
+-- запрос возвращает названия пяти самых популярных фильмов
+SELECT name
+FROM film
+WHERE id IN (
+  -- подзапрос возвращает id 5 популярных фильмов
+  SELECT film_id
+  FROM like
+  GROUP BY film_id
+  ORDER BY COUNT(user_id) DESC
+  LIMIT 5
+);
+```
+
+```
+-- запрос возвращает id общих друзей пользователей с id 1 и 4
+SELECT friend_id
+FROM friendship
+WHERE user_id = 4 AND status = true AND friend_id IN (
+  -- запрос возвращает id друзей пользователя
+  SELECT friend_id
+  FROM friendship
+  WHERE user_id = 1 AND status = true
+);
+```
