@@ -3,11 +3,11 @@ package ru.yandex.practicum.filmorate.service.user;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.user.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
@@ -19,8 +19,8 @@ public class UserService implements UserServiceInterface {
 	private final UserStorage storage;
 
 	@Autowired
-	public UserService(InMemoryUserStorage inMemoryUserStorage) {
-		this.storage = inMemoryUserStorage;
+	public UserService(@Qualifier("UserStorageDAO") UserStorage userStorage) {
+		this.storage = userStorage;
 	}
 
 	@Override
@@ -70,17 +70,21 @@ public class UserService implements UserServiceInterface {
 		log.debug("Request to become friends by ID: {} {}.", userId, friendId);
 		User user1 = getUserByIdAndExistCheck(userId);
 		User user2 = getUserByIdAndExistCheck(friendId);
-		if (user1.getFriends().contains(friendId)) {
+		if (user1.getFriends().containsKey(friendId)) {
 			log.debug("User with ID = {} and user with ID = {} are already friends.", userId, friendId);
 			throw new FriendsException(
 					String.format("User with ID = %s and user with ID = %s are already friends.", userId, friendId)
 			);
 		}
-		user1.getFriends().add(friendId);
+		user1.getFriends().put(friendId, true);
 		storage.updateUser(user1);
-		user2.getFriends().add(userId);
+		log.debug("User with ID = {} are friend with user with ID = {}!", userId, friendId);
+		/*
+		Дружба теперь односторонняя. На всякий оставил старый код, вдруг чо.
+		user2.getFriends().put(userId, true);
 		storage.updateUser(user2);
 		log.debug("Users with IDs: {} {} are friends!", userId, friendId);
+		 */
 	}
 
 	@Override
@@ -88,7 +92,7 @@ public class UserService implements UserServiceInterface {
 		log.debug("Request to end friendship by IDs: {} {}.", userId, friendId);
 		User user1 = getUserByIdAndExistCheck(userId);
 		User user2 = getUserByIdAndExistCheck(friendId);
-		if (!user1.getFriends().contains(friendId)) {
+		if (!user1.getFriends().containsKey(friendId)) {
 			log.debug("User with ID = {} and user with ID = {} are not friends.", userId, friendId);
 			throw new FriendsException(
 					String.format("User with ID = %s and user with ID = %s are not friends.", userId, friendId)
@@ -106,8 +110,8 @@ public class UserService implements UserServiceInterface {
 		log.debug("Request to get mutual friends by IDs: {} {}.", userId, otherUserId);
 		User user1 = getUserByIdAndExistCheck(userId);
 		User user2 = getUserByIdAndExistCheck(otherUserId);
-		Set<Integer> user1Friends = user1.getFriends();
-		Set<Integer> user2Friends = user2.getFriends();
+		Set<Integer> user1Friends = user1.getFriends().keySet();
+		Set<Integer> user2Friends = user2.getFriends().keySet();
 
 		Set<Integer> mutualFriendsIDs = user1Friends.stream()
 				.filter(user2Friends::contains)
@@ -127,7 +131,7 @@ public class UserService implements UserServiceInterface {
 		User user = getUserByIdAndExistCheck(id);
 
 		List<User> friends = new ArrayList<>();
-		for (int friendId : user.getFriends()) {
+		for (int friendId : user.getFriends().keySet()) {
 			Optional<User> friend = storage.getUserById(friendId);
 			friend.ifPresent(friends::add);
 		}
@@ -144,7 +148,7 @@ public class UserService implements UserServiceInterface {
 	}
 
 	private void deleteUserFromAllFriendsSets(User user) {
-		Set<Integer> userFriends = user.getFriends();
+		Set<Integer> userFriends = user.getFriends().keySet();
 		for (Integer id : userFriends) {
 			Optional<User> friend = storage.getUserById(id);
 			friend.ifPresent(value -> value.getFriends().remove(user.getId()));

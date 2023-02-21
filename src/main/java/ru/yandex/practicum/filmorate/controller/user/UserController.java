@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.validator.Validators;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class UserController {
 
 	private void setUserNameAndFriendsSet(User user) {
 		if(user.getFriends() == null)
-			user.setFriends(new HashSet<>());
+			user.setFriends(new HashMap<>());
 		if (user.getName() == null || user.getName().isBlank())
 			user.setName(user.getLogin());
 	}

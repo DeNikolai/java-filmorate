@@ -3,14 +3,13 @@ package ru.yandex.practicum.filmorate.service.film;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import ru.yandex.practicum.filmorate.exception.*;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.user.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.*;
@@ -23,9 +22,10 @@ public class FilmService implements FilmServiceInterface {
 	private final UserStorage userStorage;
 
 	@Autowired
-	public FilmService(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage) {
-		this.filmStorage = inMemoryFilmStorage;
-		this.userStorage = inMemoryUserStorage;
+	public FilmService(@Qualifier("FilmStorageDAO") FilmStorage filmStorage,
+					   @Qualifier("UserStorageDAO") UserStorage userStorage) {
+		this.filmStorage = filmStorage;
+		this.userStorage = userStorage;
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class FilmService implements FilmServiceInterface {
 
 	@Override
 	public List<Film> getAllFilms() {
-		return new ArrayList<>(filmStorage.getFilms().values());
+		return new ArrayList<>(filmStorage.getFilms());
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class FilmService implements FilmServiceInterface {
 		/*
 		Первый элемент в стриме после сортировки с самым большим количеством лайков.
 		 */
-		return filmStorage.getFilms().values().stream()
+		return filmStorage.getFilms().stream()
 				.sorted((Film f1, Film f2) -> f2.getLikes().size() - f1.getLikes().size())
 				.limit(count)
 				.toArray();

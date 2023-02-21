@@ -6,8 +6,7 @@ import java.util.*;
 
 public interface FilmStorage {
 
-
-	HashMap<Integer, Film> getFilms();
+	Collection<Film> getFilms();
 
 	Optional<Film> getFilmById(int id);
 
