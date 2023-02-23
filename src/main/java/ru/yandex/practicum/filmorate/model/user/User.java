@@ -5,10 +5,11 @@ import lombok.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Set;
 
 @Data
-@Builder//для тестирования
+@Builder
 public class User {
 	@EqualsAndHashCode.Exclude
 	private Integer id;
@@ -24,9 +25,5 @@ public class User {
 	@EqualsAndHashCode.Exclude
 	private final LocalDate birthday;
 	@EqualsAndHashCode.Exclude
-	private Set<Integer> friends;
-	/*
-	Тут будет HashMap<Integer, Boolean> friends
-	с подтверждением добавления в друзья.
-	 */
+	private HashMap<Integer, Boolean> friends;
 }

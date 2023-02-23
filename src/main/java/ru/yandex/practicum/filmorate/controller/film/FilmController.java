@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.film;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IDException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.model.film.MPARating;
+import ru.yandex.practicum.filmorate.service.film.FilmServiceImpl;
 import ru.yandex.practicum.filmorate.validator.Validators;
 
 import javax.validation.Valid;
@@ -22,11 +23,11 @@ import java.util.Set;
 @Slf4j
 public class FilmController {
 
-	private final FilmService filmService;
+	private final FilmServiceImpl filmService;
 	private static final int DEFAULT_COUNT = 10;
 
 	@Autowired
-	public FilmController(FilmService filmService) {
+	public FilmController(FilmServiceImpl filmService) {
 		this.filmService = filmService;
 	}
 
@@ -34,6 +35,8 @@ public class FilmController {
 	public Film postFilm(@RequestBody @Valid Film film) {
 		validateFilm(film);
 		setLikesSet(film);
+		setGenresSet(film);
+		setMPARating(film);
 		return filmService.addFilm(film);
 	}
 
@@ -52,6 +55,8 @@ public class FilmController {
 		filmIdCheck(film.getId());
 		validateFilm(film);
 		setLikesSet(film);
+		setGenresSet(film);
+		setMPARating(film);
 		return filmService.updateFilm(film);
 	}
 
@@ -104,6 +109,16 @@ public class FilmController {
 	private void setLikesSet(Film film) {
 		if (film.getLikes() == null)
 			film.setLikes(new HashSet<>());
+	}
+
+	private void setGenresSet(Film film) {
+		if (film.getGenres() == null)
+			film.setGenres(new HashSet<>());
+	}
+
+	private void setMPARating(Film film) {
+		if (film.getMpa() == null)
+			film.setMpa(MPARating.builder().build());
 	}
 
 	private void filmIdCheck(Integer id) {

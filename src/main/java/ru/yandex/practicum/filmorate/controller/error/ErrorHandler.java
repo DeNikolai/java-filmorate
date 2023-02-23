@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,7 +29,10 @@ public class ErrorHandler {
 		return Map.of("Not found", e.getMessage());
 	}
 
-	@ExceptionHandler({FilmDoesNotExistException.class, UserDoesNotExistException.class})
+	@ExceptionHandler({FilmDoesNotExistException.class,
+			UserDoesNotExistException.class,
+			FilmGenreDoesNotExistException.class,
+			MPARatingDoesNotExistException.class})
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public Map<String, String> handleNotFound(RuntimeException e) {
 		return Map.of("Not found", e.getMessage());

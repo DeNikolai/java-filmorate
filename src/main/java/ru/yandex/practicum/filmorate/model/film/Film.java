@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Data
-@Builder//для тестирования
+@Builder
 public class Film {
 	@EqualsAndHashCode.Exclude
 	private Integer id;
@@ -24,7 +24,7 @@ public class Film {
 	@EqualsAndHashCode.Exclude
 	private Set<Integer> likes;
 	@EqualsAndHashCode.Exclude
-	private Set<FilmGenres> genres;
+	private Set<FilmGenre> genres;
 	@EqualsAndHashCode.Exclude
-	private MPARatings MPARating;
+	private MPARating mpa;
 }

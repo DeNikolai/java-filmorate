@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.film.Film;
 
 import java.util.*;
 
 @Repository
+@Qualifier("InMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
 
 	private int idCounter = 0;
@@ -13,8 +15,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 	private final HashMap<Integer, Film> films = new HashMap<>();
 
 	@Override
-	public HashMap<Integer, Film> getFilms() {
-		return films;
+	public Collection<Film> getFilms() {
+		return films.values();
 	}
 
 	@Override
