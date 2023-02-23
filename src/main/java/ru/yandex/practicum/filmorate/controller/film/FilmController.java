@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.exception.IDException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.MPARating;
-import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.film.FilmServiceImpl;
 import ru.yandex.practicum.filmorate.validator.Validators;
 
 import javax.validation.Valid;
@@ -23,11 +23,11 @@ import java.util.Set;
 @Slf4j
 public class FilmController {
 
-	private final FilmService filmService;
+	private final FilmServiceImpl filmService;
 	private static final int DEFAULT_COUNT = 10;
 
 	@Autowired
-	public FilmController(FilmService filmService) {
+	public FilmController(FilmServiceImpl filmService) {
 		this.filmService = filmService;
 	}
 

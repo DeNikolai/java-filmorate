@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.film.MPARating;
 import ru.yandex.practicum.filmorate.service.film.MPARatingService;
+import ru.yandex.practicum.filmorate.service.film.MPARatingServiceImpl;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class MPARatingController {
 	private final MPARatingService mrs;
 
 	@Autowired
-	public MPARatingController(MPARatingService mrs) {
+	public MPARatingController(MPARatingServiceImpl mrs) {
 		this.mrs = mrs;
 	}
 

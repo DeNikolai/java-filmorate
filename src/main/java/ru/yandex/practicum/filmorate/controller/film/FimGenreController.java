@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.film.FilmGenre;
 import ru.yandex.practicum.filmorate.service.film.FilmGenreService;
+import ru.yandex.practicum.filmorate.service.film.FilmGenreServiceImpl;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class FimGenreController {
 	private final FilmGenreService fgs;
 
 	@Autowired
-	public FimGenreController(FilmGenreService fgs) {
+	public FimGenreController(FilmGenreServiceImpl fgs) {
 		this.fgs = fgs;
 	}
 

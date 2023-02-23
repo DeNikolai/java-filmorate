@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.IDException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.user.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.service.user.UserServiceImpl;
 import ru.yandex.practicum.filmorate.validator.Validators;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -20,10 +19,10 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-	private final UserService userService;
+	private final UserServiceImpl userService;
 
 	@Autowired
-	public UserController(UserService userService) {
+	public UserController(UserServiceImpl userService) {
 		this.userService = userService;
 	}
 
